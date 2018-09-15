@@ -145,7 +145,7 @@ void mlp::train(std::vector< std::vector<uint8_t > > trainingImages, std::vector
         int label = trainingLabels[imgCount];
         auto normalizedImage = new std::vector< float >(trainingImages[imgCount].size());
         for(unsigned long j =0; j < image.size(); j++){
-            normalizedImage->at(j) = image[j] ? 1 : 0;
+            normalizedImage->at(j) = image[j] / 255.0f;
         }
         this->feedInput(normalizedImage);
         this->feedForward();
@@ -165,7 +165,7 @@ void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint
         int label = testLabels[imgCount];
         auto normalizedImage = new std::vector< float >(image.size());
         for(unsigned long j =0; j < image.size(); j++){
-            normalizedImage->at(j) = image[j] ? 1 : 0;
+            normalizedImage->at(j) = image[j] / 255.0f;
         }
         this->feedInput(normalizedImage);
         this->feedForward();
