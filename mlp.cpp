@@ -11,16 +11,13 @@
 layer * mlp::getLayer(Type type){
     return &layers[type];
 }
-float mlp::getDerivative(float outVal){
-    return outVal * (1-outVal);
-}
 
 void mlp::updateNeuronWeights(Type type, unsigned long id, float error){
     neuron *updateNeuron = getLayer(type)->getNeuron(id);
     for (unsigned long i = 0; i < updateNeuron->getWeights()->size(); i++){
-        updateNeuron->getWeights()->at(i) += (this->learningRate * getPrevLayer(type)->getNeuron(i)->getOutput() * error);
+        updateNeuron->getWeights()->at(i) += (learningRate * getPrevLayer(type)->getNeuron(i)->getOutput() * error);
     }
-    updateNeuron->setBias(updateNeuron->getBias() + (this->learningRate * 1 * error));
+    updateNeuron->setBias(updateNeuron->getBias() + (learningRate * 1 * error));
 }
 
 void mlp::backPropagateHiddenLayer(int targetClassification){
@@ -31,10 +28,11 @@ void mlp::backPropagateHiddenLayer(int targetClassification){
             neuron *on = outputLayer->getNeuron(o);
             int targetOutput = (o == targetClassification) ? 1 : 0;
             float errorDelta = targetOutput - on->getOutput();
-            float errorSignal = errorDelta * getDerivative(on->getOutput());
+            float errorSignal = errorDelta * (on->getOutput() * (1 - on->getOutput()));
             outputCellErrorSum += errorSignal * on->getWeights()->at(h);
         }
-        float hiddenErrorSignal = outputCellErrorSum * getDerivative(getLayer(HIDDEN)->getNeuron(h)->getOutput());
+        float output = getLayer(HIDDEN)->getNeuron(h)->getOutput();
+        float hiddenErrorSignal = outputCellErrorSum * (output * (1 - output));
         updateNeuronWeights(HIDDEN, h, hiddenErrorSignal);
     }
 }
@@ -44,7 +42,7 @@ void mlp::backPropagateOutputLayer(int targetClassification){
         neuron *on = getLayer(OUTPUT)->getNeuron(o);
         int targetOutput = (o == targetClassification) ? 1 : 0;
         float errorDelta = targetOutput - on->getOutput();
-        float errorSignal = errorDelta * getDerivative(on->getOutput());
+        float errorSignal = errorDelta * (on->getOutput() * (1 - on->getOutput()));
         updateNeuronWeights(OUTPUT, o, errorSignal);
     }
 }
@@ -147,9 +145,9 @@ void mlp::train(std::vector< std::vector<uint8_t > > trainingImages, std::vector
         for(unsigned long j =0; j < image.size(); j++){
             normalizedImage->at(j) = image[j] / 255.0f;
         }
-        this->feedInput(normalizedImage);
-        this->feedForward();
-        this->backPropagate(label);
+        feedInput(normalizedImage);
+        feedForward();
+        backPropagate(label);
         int classification = getClassification();
         if (classification!=label) errCount++;
         displayTrainingProgress(imgCount, errCount, trainingImages.size());
@@ -167,8 +165,8 @@ void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint
         for(unsigned long j =0; j < image.size(); j++){
             normalizedImage->at(j) = image[j] / 255.0f;
         }
-        this->feedInput(normalizedImage);
-        this->feedForward();
+        feedInput(normalizedImage);
+        feedForward();
         int classification = getClassification();
         if (classification!=label) errCount++;
         displayTestingProgress(imgCount, errCount, testImages.size(), classification, label);
@@ -201,8 +199,6 @@ void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, unsig
     printf("2: TESTING:  reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
     double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
     printf("TOTAL: correct=%5ld  incorrect=%5d  accuracy=%5.4f%%  ",imageCount + 1 - errorCount, errorCount, accuracy);
-    if(classification != label)
-        printf("PREDICTED: %1d ACTUAL: %1d\n", classification, label);
-    else
-        printf("\n");
+    if(classification != label) printf("PREDICTED: %1d ACTUAL: %1d\n", classification, label);
+    else printf("\n");
 }

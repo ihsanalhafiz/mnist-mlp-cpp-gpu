@@ -17,7 +17,6 @@ public:
     layer* getPrevLayer(Type type);
     layer *createInputLayer(unsigned long inputCount);
     layer *createLayer(unsigned long neuronCount, unsigned long weightCount);
-    float getDerivative(float outVal);
     int getClassification();
     void updateNeuronWeights(Type type, unsigned long id, float error);
     void backPropagateHiddenLayer(int targetClassification);
