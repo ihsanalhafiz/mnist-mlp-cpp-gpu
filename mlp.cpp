@@ -8,6 +8,12 @@
 #include <cmath>
 #include <random>
 
+#define RST  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define FRED(x) KRED x RST
+#define FGRN(x) KGRN x RST
+
 layer * mlp::getLayer(Type type){
     return &layers[type];
 }
@@ -189,16 +195,16 @@ int mlp::getClassification(){
 
 void mlp::displayTrainingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount){
     double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
-    printf("1: TRAINING: reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
+    printf("TRAINING: reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
     double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
     printf("RESULTS: correct=%5ld  incorrect=%5d  accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy);
 }
 
 void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount, int classification, int label){
     double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
-    printf("2: TESTING:  reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
+    printf("TESTING:  reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
     double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
     printf("TOTAL: correct=%5ld  incorrect=%5d  accuracy=%5.4f%%  ",imageCount + 1 - errorCount, errorCount, accuracy);
-    if(classification != label) printf("PREDICTED: %1d ACTUAL: %1d\n", classification, label);
-    else printf("\n");
+    if(classification != label) printf(FRED("PREDICTED: %1d ACTUAL: %1d\n"), classification, label);
+    else printf(FGRN("PREDICTED: %1d ACTUAL: %1d\n"), classification, label);
 }

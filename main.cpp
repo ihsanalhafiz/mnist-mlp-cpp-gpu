@@ -4,7 +4,7 @@
 #include <chrono>
 
 mlp *createNetwork(unsigned long inputCount, unsigned long hiddenCount, unsigned long outputCount){
-    mlp *nn = new mlp();
+    auto *nn = new mlp();
     nn->init(inputCount, hiddenCount, outputCount);
     nn->setLearningRate(0.2);
     nn->initWeights(HIDDEN);
