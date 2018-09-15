@@ -152,7 +152,7 @@ void mlp::train(std::vector< std::vector<uint8_t > > trainingImages, std::vector
         this->backPropagate(label);
         int classification = getClassification();
         if (classification!=label) errCount++;
-        displayTrainingProgress(imgCount, errCount, 3,5, trainingImages.size());
+        displayTrainingProgress(imgCount, errCount, trainingImages.size());
     }
 }
 
@@ -174,7 +174,7 @@ void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint
             errCount++;
             std::cout << "PREDICTED: " << classification << " ACTUAL: " << label << std::endl;
         }
-        displayTestingProgress(imgCount, errCount, 5,5, testImages.size());
+        displayTestingProgress(imgCount, errCount, testImages.size());
     }
 }
 
@@ -192,22 +192,16 @@ int mlp::getClassification(){
     return (int)maxInd;
 }
 
-void mlp::locateCursor(int row, int col){
-    printf("%c[%d;%dH",27,row,col);
+void mlp::displayTrainingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount){
+    double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
+    printf("1: TRAINING: reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
+    double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
+    printf("RESULTS: correct=%5ld  incorrect=%5d  accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy);
 }
 
-void mlp::displayTrainingProgress(unsigned long imageCount, int errorCount, int y, int x, unsigned long totalCount){
+void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount){
     double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
-    if (x != 0 && y != 0) locateCursor(y, x);
-    printf("1: TRAINING: Reading image No. %5ld of %5ld images [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
-    double accuracy = 1 - ((double)errorCount/(double)(imageCount+1));
-    printf("Result: Correct=%5ld  Incorrect=%5d  Accuracy=%5.4f%% \n",imageCount+1-errorCount, errorCount, accuracy*100);
-}
-
-void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, int y, int x, unsigned long totalCount){
-    double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
-    if (x != 0 && y != 0) locateCursor(y, x);
-    printf("2: TESTING:  Reading image No. %5ld of %5ld images [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
-    double accuracy = 1 - ((double)errorCount/(double)(imageCount + 1));
-    printf("Result: Correct=%5ld  Incorrect=%5d  Accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy*100);
+    printf("2: TESTING:  reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
+    double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
+    printf("TOTAL: correct=%5ld  incorrect=%5d  accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy);
 }
