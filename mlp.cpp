@@ -136,14 +136,14 @@ void mlp::initWeights(Type type){
     }
 }
 
-void mlp::train(mnist::dataset dataSet){
-    std::cout << "Number of training images = " << dataSet.trainingImages.size() << std::endl;
-    std::cout << "Number of training labels = " << dataSet.trainingLabels.size() << std::endl;
+void mlp::train(std::vector< std::vector<uint8_t > > trainingImages, std::vector<uint8_t > trainingLabels){
+    std::cout << "Number of training images = " << trainingImages.size() << std::endl;
+    std::cout << "Number of training labels = " << trainingLabels.size() << std::endl;
     int errCount = 0;
-    for (unsigned long imgCount=0; imgCount < dataSet.trainingImages.size(); imgCount++){
-        std::vector<uint8_t > image = dataSet.trainingImages[imgCount];
-        int label = dataSet.trainingLabels[imgCount];
-        auto normalizedImage = new std::vector< float >(dataSet.trainingImages[imgCount].size());
+    for (unsigned long imgCount=0; imgCount < trainingImages.size(); imgCount++){
+        std::vector<uint8_t > image = trainingImages[imgCount];
+        int label = trainingLabels[imgCount];
+        auto normalizedImage = new std::vector< float >(trainingImages[imgCount].size());
         for(unsigned long j =0; j < image.size(); j++){
             normalizedImage->at(j) = image[j] ? 1 : 0;
         }
@@ -152,17 +152,17 @@ void mlp::train(mnist::dataset dataSet){
         this->backPropagate(label);
         int classification = getClassification();
         if (classification!=label) errCount++;
-        displayTrainingProgress(imgCount, errCount, 3,5, dataSet.trainingImages.size());
+        displayTrainingProgress(imgCount, errCount, 3,5, trainingImages.size());
     }
 }
 
-void mlp::test(mnist::dataset dataSet){
-    std::cout << "Number of test images = " << dataSet.testImages.size() << std::endl;
-    std::cout << "Number of test labels = " << dataSet.testLabels.size() << std::endl;
+void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint8_t > testLabels){
+    std::cout << "Number of test images = " << testImages.size() << std::endl;
+    std::cout << "Number of test labels = " << testLabels.size() << std::endl;
     int errCount = 0;
-    for (unsigned long imgCount = 0; imgCount < dataSet.testImages.size(); imgCount++){
-        std::vector<uint8_t > image = dataSet.testImages[imgCount];
-        int label = dataSet.testLabels[imgCount];
+    for (unsigned long imgCount = 0; imgCount < testImages.size(); imgCount++){
+        std::vector<uint8_t > image = testImages[imgCount];
+        int label = testLabels[imgCount];
         auto normalizedImage = new std::vector< float >(image.size());
         for(unsigned long j =0; j < image.size(); j++){
             normalizedImage->at(j) = image[j] ? 1 : 0;
@@ -174,7 +174,7 @@ void mlp::test(mnist::dataset dataSet){
             errCount++;
             std::cout << "PREDICTED: " << classification << " ACTUAL: " << label << std::endl;
         }
-        displayTestingProgress(imgCount, errCount, 5,5, dataSet.testImages.size());
+        displayTestingProgress(imgCount, errCount, 5,5, testImages.size());
     }
 }
 
@@ -211,4 +211,3 @@ void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, int y
     double accuracy = 1 - ((double)errorCount/(double)(imageCount + 1));
     printf("Result: Correct=%5ld  Incorrect=%5d  Accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy*100);
 }
-
