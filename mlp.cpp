@@ -170,11 +170,8 @@ void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint
         this->feedInput(normalizedImage);
         this->feedForward();
         int classification = getClassification();
-        if (classification!=label) {
-            errCount++;
-            std::cout << "PREDICTED: " << classification << " ACTUAL: " << label << std::endl;
-        }
-        displayTestingProgress(imgCount, errCount, testImages.size());
+        if (classification!=label) errCount++;
+        displayTestingProgress(imgCount, errCount, testImages.size(), classification, label);
     }
 }
 
@@ -199,9 +196,13 @@ void mlp::displayTrainingProgress(unsigned long imageCount, int errorCount, unsi
     printf("RESULTS: correct=%5ld  incorrect=%5d  accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy);
 }
 
-void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount){
+void mlp::displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount, int classification, int label){
     double progress = (double)(imageCount + 1)/(double)(totalCount) * 100;
     printf("2: TESTING:  reading image %5ld / %5ld progress [%3d%%]  ",(imageCount + 1),totalCount,(int)progress);
     double accuracy = (1 - ((double)errorCount/(double)(imageCount + 1))) * 100;
-    printf("TOTAL: correct=%5ld  incorrect=%5d  accuracy=%5.4f%% \n",imageCount + 1 - errorCount, errorCount, accuracy);
+    printf("TOTAL: correct=%5ld  incorrect=%5d  accuracy=%5.4f%%  ",imageCount + 1 - errorCount, errorCount, accuracy);
+    if(classification != label)
+        printf("PREDICTED: %1d ACTUAL: %1d\n", classification, label);
+    else
+        printf("\n");
 }

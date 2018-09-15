@@ -34,7 +34,7 @@ public:
     void train(std::vector< std::vector<uint8_t > > trainingImages, std::vector<uint8_t > trainingLabels);
     void test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint8_t > testLabels);
     void displayTrainingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount);
-    void displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount);
+    void displayTestingProgress(unsigned long imageCount, int errorCount, unsigned long totalCount, int classification, int label);
 };
 
 #endif //MLP_MLP_H
