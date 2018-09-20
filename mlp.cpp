@@ -60,7 +60,7 @@ void mlp::backPropagate(int targetClassification){
 
 void mlp::activateNeuron(Type type, unsigned long id){
     neuron *n = getLayer(type)->getNeuron(id);
-    n->setOutput(1 / (1 + (exp(-n->getOutput())) ));
+    n->setOutput(1 / (1 + ((float)exp(-n->getOutput())) ));
 }
 
 layer* mlp::getPrevLayer(Type type){

@@ -6,6 +6,7 @@
 #define MLP_MLP_H
 
 #include <vector>
+#include <cstdint>
 #include "layer.h"
 
 class mlp {
