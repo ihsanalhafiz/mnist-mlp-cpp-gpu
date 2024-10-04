@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",               // Label for the task
+            "type": "cppbuild",                // Use shell to run the task
+            "command": "make all",              // Run the make command
+            "args": [],                     // Arguments passed to the command (empty since it just runs 'make')
+            "group": {
+                "kind": "build",            // Group this task under "build" category
+                "isDefault": true           // Make this the default build task
+            },
+            "problemMatcher": [
+                "$gcc"                      // Use gcc matcher to highlight errors/warnings
+            ],
+            "detail": "Build task for Makefile project"  // Task description (for VSCode UI)
+        }
+    ]
+}
