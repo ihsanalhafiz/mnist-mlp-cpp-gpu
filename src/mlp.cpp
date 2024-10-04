@@ -156,7 +156,7 @@ void mlp::train(std::vector< std::vector<uint8_t > > trainingImages, std::vector
         backPropagate(label);
         int classification = getClassification();
         if (classification!=label) errCount++;
-        displayTrainingProgress(imgCount, errCount, trainingImages.size());
+        if (imgCount % 1000 == 0) displayTrainingProgress(imgCount, errCount, trainingImages.size());
     }
 }
 
@@ -175,7 +175,7 @@ void mlp::test(std::vector< std::vector<uint8_t > > testImages, std::vector<uint
         feedForward();
         int classification = getClassification();
         if (classification!=label) errCount++;
-        displayTestingProgress(imgCount, errCount, testImages.size(), classification, label);
+        if(imgCount % 1000 == 0) displayTestingProgress(imgCount, errCount, testImages.size(), classification, label);
     }
 }
 
